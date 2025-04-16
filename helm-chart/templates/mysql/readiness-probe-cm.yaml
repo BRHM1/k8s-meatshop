@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.mysql.cms.readiness.name }}
+data:
+  readiness.sh: |
+    #!/bin/sh
+    mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "SELECT 1"
+

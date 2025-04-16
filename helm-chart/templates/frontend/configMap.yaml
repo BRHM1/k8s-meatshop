@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.frontend.cm.name }}
+data:
+  config.json: |-
+    {
+      "SERVER_URL": "http://{{ .Values.ingress.backend_host }}:{{ .Values.ingress.ingress_controller_svc_nodePort }}/shop",
+      "AUTH_URL": "http://{{ .Values.ingress.backend_host }}:{{ .Values.ingress.ingress_controller_svc_nodePort }}/auth"
+    }

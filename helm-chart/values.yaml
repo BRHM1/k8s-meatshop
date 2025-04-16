@@ -1,0 +1,67 @@
+frontend:
+  deployment: 
+    name: frontend
+    labels:
+      tier: frontend
+    replicas: 1
+    image: borhom11/frontend:1.0.5
+  services:
+    name: frontend-svc
+    port: 80
+  cm:
+    name: frontend-config
+backend:
+  deployment:
+    name: backend
+    labels:
+      tier: backend
+    replicas: 1
+    image: borhom11/backend:1.0.1
+    secretName: backend-secret
+  services:
+    nodePort:
+      name: backend-nodeport
+      port: 8000  
+    clusterIP:
+      name: backend-service
+      port: 8000
+  secret:
+    name: backend-secret
+    db_name: bWVhdHNob3A=
+    port: MzMwNg==
+    user: cm9vdA==
+    password: c3Ryb25nUGFzc3dvcmQ= 
+    host: bXlzcWwtMC5teXNxbA==
+    settings_module: bWVhdHNob3Auc2V0dGluZ3MuZGV2
+    secret_key: JGFzbnlzenp1YyNjOWpoemJucDBybSZleitpMWYwaHNuZF9yJHdyaCk5eF9vJHBwQDQ=
+    superuser_email: YWRtaW5AYWRtaW4uY29t
+    superuser_username: YWRtaW4=
+    superuser_password: c3Ryb25nUGFzc3dvcmQ=
+mysql:
+  statefulset:
+    name: mysql
+    labels: 
+      app: mysql
+      app.kubernetes.io/name: mysql
+    image: mysql
+    storageClass: local-path
+  secret:
+    name: db-secret
+    db: bWVhdHNob3A=
+    root_password: c3Ryb25nUGFzc3dvcmQ=
+    user: cm9vdA==
+  cms:
+    liveness:
+      name: liveness
+    readiness:
+      name: readiness
+  service:
+    name: mysql
+  job:
+    name: mysql-init-job
+
+ingress:
+  name: app-ingress
+  frontend_host: frontend.local
+  backend_host: backend.local
+  ingress_controller_svc_nodePort: 31404

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.backend.deployment.name }}
+  labels:
+    {{- range $key, $value := .Values.backend.deployment.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.backend.deployment.replicas }}
+  selector:
+    matchLabels:
+      {{- range $key, $value := .Values.backend.deployment.labels }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- range $key, $value := .Values.backend.deployment.labels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      nodeName: node01
+      initContainers:
+        - name: run-migrations
+          image: {{ .Values.backend.deployment.image }}
+          command: ["sh", "-c"]
+          args:
+          - "python manage.py migrate --no-input && 
+             python manage.py createcachetable" 
+          envFrom:
+          - secretRef:
+              name: {{ .Release.Name }}-{{ .Values.backend.deployment.secretName }}
+      containers:
+        - name: backend
+          image: {{ .Values.backend.deployment.image }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-{{ .Values.backend.deployment.secretName }}

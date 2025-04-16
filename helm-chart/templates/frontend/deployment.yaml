@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.frontend.deployment.name }}
+  labels:
+    {{- range $key, $value := .Values.frontend.deployment.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- range $key, $value := .Values.frontend.deployment.labels }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
+  template:
+    metadata:
+       labels:
+         {{- range $key, $value := .Values.frontend.deployment.labels }}
+         {{ $key }}: {{ $value | quote }}
+         {{- end }}
+    spec:
+      nodeName: node01
+      containers:
+        - name: frontend-container
+          image: {{ .Values.frontend.deployment.image | quote }}
+          volumeMounts:
+          - name: config-volume
+            mountPath: /usr/share/nginx/html/config.json
+            subPath: config.json
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-{{ .Values.frontend.cm.name }}
+            items:
+              - key: config.json
+                path: config.json
+  replicas: {{ .Values.frontend.deployment.replicas }}

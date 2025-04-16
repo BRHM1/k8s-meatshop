@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: backend
+  template:
+    metadata:
+      labels:
+        tier: backend
+    spec:
+      initContainers:
+        - name: run-migrations
+          image: eladwy/g-back 
+          command: ["sh", "-c"]
+          args:
+          - "python manage.py migrate --no-input && 
+             python manage.py createcachetable" 
+          envFrom:
+          - secretRef:
+              name: backend-secret 
+      containers:
+        - name: backend
+          image: eladwy/g-back
+          envFrom:
+            - secretRef:
+                name: backend-secret

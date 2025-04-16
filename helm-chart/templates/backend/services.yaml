@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.backend.services.nodePort.name }}
+spec:
+  selector:
+      {{- range $key, $value := .Values.backend.deployment.labels }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
+  type: NodePort
+  ports:
+  - targetPort: 8000
+    port: {{ .Values.backend.services.nodePort.port }}
+    nodePort: 32046
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: {{ .Release.Name }}-{{ .Values.backend.services.clusterIP.name }}
+spec:
+  selector:
+    {{- range $key, $value := .Values.backend.deployment.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  ports:
+  - targetPort: 8000
+    port: {{ .Values.backend.services.clusterIP.port }}

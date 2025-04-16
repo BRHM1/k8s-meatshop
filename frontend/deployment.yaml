@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend-deployment
+spec:
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+       labels:
+         tier: frontend
+    spec:
+      containers:
+        - name: frontend-container
+          image: borhom11/frontend:1.0.5
+          volumeMounts:
+          - name: config-volume
+            mountPath: /usr/share/nginx/html/config.json
+            subPath: config.json
+      volumes:
+        - name: config-volume
+          configMap:
+            name: frontend-config
+            items:
+              - key: config.json
+                path: config.json
+  replicas: 2

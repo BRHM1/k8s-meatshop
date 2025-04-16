@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-init-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: mysql-init-container
+        image: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: MYSQL_USER
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: DB_HOST
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          mysql -h${MYSQL_HOST}  -u root -p${MYSQL_ROOT_PASSWORD} <<EOF
+          CREATE DATABASE IF NOT EXISTS meatshop;
+          EOF
+      restartPolicy: Never

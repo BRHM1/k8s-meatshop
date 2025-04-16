@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+data:
+  config.json: |
+    {
+      "SERVER_URL": "http://backend.local:31404/shop",
+      "AUTH_URL": "http://backend.local:31404/auth"
+    }
+

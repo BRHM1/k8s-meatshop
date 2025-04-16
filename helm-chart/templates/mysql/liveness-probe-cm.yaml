@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.mysql.cms.liveness.name }}
+data:
+  liveness.sh: |
+    #!/bin/sh
+    mysqladmin -p${MYSQL_ROOT_PASSWORD} ping 

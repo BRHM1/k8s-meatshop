@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.mysql.service.name }}
+  labels:
+    {{- range $key, $value := .Values.mysql.statefulset.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  ports:
+  - name: mysql
+    port: 3306
+  clusterIP: None
+  selector:
+    {{- range $key, $value := .Values.mysql.statefulset.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}

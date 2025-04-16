@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-superuser
+spec:
+  template:
+    spec:
+      containers:
+      - name: django
+        image: eladwy/g-back
+        command: ["/bin/bash",  "-c"]
+        args:
+          - "python manage.py createsuperuser --no-input"
+        envFrom:
+        - secretRef:
+            name: backend-secret
+      restartPolicy: Never
+  backoffLimit: 4
+

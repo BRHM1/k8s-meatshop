@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.mysql.statefulset.name }}
+spec:
+  selector:
+    matchLabels:
+      {{- range $key, $value := .Values.mysql.statefulset.labels }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
+  serviceName: {{ .Release.Name }}-{{ .Values.mysql.service.name }}
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        {{- range $key, $value := .Values.mysql.statefulset.labels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      containers:
+      - name: mysql
+        image: {{ .Values.mysql.statefulset.image }}
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-{{ .Values.mysql.secret.name }}
+              key: MYSQL_ROOT_PASSWORD
+        ports:
+        - name: mysql
+          containerPort: 3306
+        volumeMounts:
+        - name: readiness-script
+          mountPath: /health
+          readOnly: true
+        - name: liveness-script
+          mountPath: /liveness
+          readOnly: true
+        - name: data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        - name: conf
+          mountPath: /etc/mysql/conf.d
+        resources:
+          requests:
+            cpu: 500m
+            memory: 500Mi
+        livenessProbe:
+          exec:
+            command: ["/bin/sh", "-c", "/liveness/liveness.sh"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["/bin/sh", "-c", "/health/readiness.sh"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+      volumes:
+      - name: liveness-script
+        configMap:
+          name: {{ .Release.Name }}-{{ .Values.mysql.cms.liveness.name }}
+          defaultMode: 0755
+      - name: readiness-script
+        configMap:
+          name: {{ .Release.Name }}-{{ .Values.mysql.cms.readiness.name }}
+          defaultMode: 0755
+      - name: conf
+        emptyDir: {}
+      - name: config-map
+        configMap:
+          name: mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: {{ .Values.mysql.statefulset.storageClass }}
+      resources:
+        requests:
+          storage: 1Gi

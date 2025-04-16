@@ -1,4 +1,4 @@
-# k8s-mal7ma
+# k8s-meatshop
 
 ## 📦 Introduction
 
@@ -9,8 +9,8 @@ This is a Helm chart for the project **elmanazala-meatshop**.
 - **Backend:** [https://github.com/BRHM1/g-back.git](https://github.com/BRHM1/g-back.git)
 
 ### 📸 Docker Images
-- **Frontend:** `borhom11/frontend:1.0.5`
-- **Backend:** `eladwy/g-back`
+- **Frontend:** `borhom11/frontend:1.0.6`
+- **Backend:** `borhom11/backend:1.0.1`
 
 ---
 

@@ -14,6 +14,10 @@ This is a Helm chart for the project **elmanazala-meatshop**.
 
 ---
 
+## Archeticture
+
+![WhatsApp Image 2025-04-16 at 18 03 03_dfa75a72](https://github.com/user-attachments/assets/e02d4161-c2d5-44db-aa09-00592fee872d)
+
 ## ✅ Prerequisites
 
 ### 🧱 Storage Class

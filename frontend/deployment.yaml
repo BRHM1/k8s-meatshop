@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend-container
-          image: borhom11/frontend-meatshop:34c34a7a17b80d15e8049301eda7528422e0be1c
+          image: borhom11/frontend-meatshop:2e0962eda8852164384f0451dfbefbedb80bb021
           volumeMounts:
           - name: config-volume
             mountPath: /usr/share/nginx/html/config.json

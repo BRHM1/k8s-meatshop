@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
         - name: run-migrations
-          image: eladwy/g-back 
+          image: borhom11/meatshop-backend:$GIT_COMMIT 
           command: ["sh", "-c"]
           args:
           - "python manage.py migrate --no-input && 
@@ -26,7 +26,7 @@ spec:
               name: backend-secret 
       containers:
         - name: backend
-          image: eladwy/g-back
+          image: borhom11/meatshop-backend:$GIT_COMMIT
           envFrom:
             - secretRef:
                 name: backend-secret

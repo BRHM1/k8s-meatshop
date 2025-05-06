@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
         - name: run-migrations
-          image: borhom11/meatshop-backend:1d86f1c469e9e2b942966b2315fd206dd5aa3654 
+          image: borhom11/meatshop-backend:78672c5c1ef7346f226003f7b73fcfe0b7082222 
           command: ["sh", "-c"]
           args:
           - "python manage.py migrate --no-input && 
@@ -26,7 +26,7 @@ spec:
               name: backend-secret 
       containers:
         - name: backend
-          image: borhom11/meatshop-backend:1d86f1c469e9e2b942966b2315fd206dd5aa3654
+          image: borhom11/meatshop-backend:78672c5c1ef7346f226003f7b73fcfe0b7082222
           envFrom:
             - secretRef:
                 name: backend-secret
